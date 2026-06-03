@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генератор сообщений</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0f0f12;
+      --surface: #1a1a20;
+      --surface2: #22222a;
+      --border: #2e2e38;
+      --accent: #fc3f1d;
+      --accent2: #ff6b47;
+      --text: #f0f0f0;
+      --text2: #8888a0;
+      --text3: #555568;
+      --green: #2ecc71;
+      --yellow: #f1c40f;
+      --red: #e74c3c;
+    }
+
+    body {
+      width: 420px;
+      min-height: 200px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .header-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: var(--text2);
+    }
+
+    .settings-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .settings-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* SCREENS */
+    .screen {
+      display: none;
+      padding: 16px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* SETTINGS SCREEN */
+    .settings-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 7px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+    }
+
+    .form-input::placeholder {
+      color: var(--text3);
+    }
+
+    /* BUTTONS */
+    .btn {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      background: var(--border);
+      color: var(--text3);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-whatsapp {
+      background: #25d366;
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background: #20bd5a;
+      transform: translateY(-1px);
+    }
+
+    .btn-telegram {
+      background: #0088cc;
+      color: white;
+    }
+
+    .btn-telegram:hover {
+      background: #0077b5;
+      transform: translateY(-1px);
+    }
+
+    .btn-sm {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    /* STATUS BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-good { background: rgba(46,204,113,0.15); color: var(--green); }
+    .badge-warn { background: rgba(241,196,15,0.15); color: var(--yellow); }
+    .badge-bad  { background: rgba(231,76,60,0.15);  color: var(--red);   }
+
+    /* CARD DATA */
+    .card-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .card-meta {
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 14px;
+    }
+
+    .checks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .check-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .check-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .check-label {
+      font-size: 11px;
+      color: var(--text2);
+    }
+
+    .check-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* PHONES */
+    .phones-section {
+      margin-bottom: 14px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 7px;
+    }
+
+    .phone-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .phone-number {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      font-family: monospace;
+    }
+
+    .phone-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .phone-btn {
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: none;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .phone-btn-wa {
+      background: rgba(37,211,102,0.15);
+      color: #25d366;
+    }
+
+    .phone-btn-wa:hover { background: #25d366; color: white; }
+
+    .phone-btn-tg {
+      background: rgba(0,136,204,0.15);
+      color: #0088cc;
+    }
+
+    .phone-btn-tg:hover { background: #0088cc; color: white; }
+
+    .phone-btn-copy {
+      background: var(--surface);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    .phone-btn-copy:hover { color: var(--text); border-color: var(--text2); }
+
+    /* MESSAGE */
+    .message-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 10px;
+      min-height: 80px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .message-box::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .message-box::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+
+    .message-box::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    /* LOADER */
+    .loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+      color: var(--text2);
+      font-size: 13px;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ERROR */
+    .error-box {
+      background: rgba(231,76,60,0.1);
+      border: 1px solid rgba(231,76,60,0.3);
+      border-radius: 7px;
+      padding: 10px 12px;
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* NOT ON MAPS */
+    .not-maps {
+      padding: 30px 20px;
+      text-align: center;
+      color: var(--text2);
+    }
+
+    .not-maps-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .not-maps-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .not-maps-sub {
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    /* BACK BTN */
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text2);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .back-btn:hover { color: var(--text); }
+
+    /* COPY TOAST */
+    .toast {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--green);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .regenerate-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: 'Manrope', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .regenerate-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-case {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px dashed var(--border);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .btn-case:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">📍</div>
+      <div>
+        <div class="header-title">Карты → Сообщение</div>
+        <div class="header-sub">Генератор сообщений</div>
+      </div>
+    </div>
+    <button class="settings-btn" id="settingsBtn">⚙ Настройки</button>
+  </div>
+
+  <!-- SCREEN: NOT ON MAPS -->
+  <div class="screen active" id="screenNotMaps">
+    <div class="not-maps">
+      <div class="not-maps-icon">🗺</div>
+      <div class="not-maps-title">Откройте карточку на Яндекс.Картах</div>
+      <div class="not-maps-sub">Перейдите на yandex.ru/maps и откройте нужную организацию</div>
+    </div>
+  </div>
+
+  <!-- SCREEN: READY TO ANALYZE -->
+  <div class="screen" id="screenReady">
+    <div style="text-align:center; padding: 20px 0 10px;">
+      <div style="font-size:28px; margin-bottom:10px;">🔍</div>
+      <div style="font-size:14px; font-weight:600; margin-bottom:6px;">Карточка найдена</div>
+      <div style="font-size:12px; color:var(--text2); margin-bottom:18px;">Нажми "Анализировать" чтобы прочитать данные карточки</div>
+      <button class="btn btn-primary" id="analyzeBtn">🔍 Анализировать карточку</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: ANALYZING -->
+  <div class="screen" id="screenAnalyzing">
+    <div class="loader">
+      <div class="spinner"></div>
+      Читаю карточку...
+    </div>
+  </div>
+
+  <!-- SCREEN: DATA + GENERATE -->
+  <div class="screen" id="screenData">
+    <div id="cardInfo"></div>
+    <button class="btn btn-primary" id="generateBtn">⚡ Сгенерировать сообщение</button>
+  </div>
+
+  <!-- SCREEN: GENERATING -->
+  <div class="screen" id="screenGenerating">
+    <div class="loader">
+      <div class="spinner"></div>
+      Claude генерирует сообщение...
+    </div>
+  </div>
+
+  <!-- SCREEN: MESSAGE READY -->
+  <div class="screen" id="screenMessage">
+    <div id="phonesBlock"></div>
+    <div class="message-header">
+      <div class="section-label">Сообщение</div>
+      <button class="regenerate-btn" id="regenerateBtn">↻ Перегенерировать</button>
+    </div>
+    <div class="message-box" id="messageBox"></div>
+    <div class="message-actions">
+      <button class="btn btn-secondary btn-sm" id="copyBtn" style="flex:1">📋 Копировать</button>
+      <button class="btn btn-secondary btn-sm" id="backToDataBtn" style="flex:1">← Назад</button>
+    </div>
+    <button class="btn btn-case" id="copyCaseBtn">📁 Скопировать кейс</button>
+  </div>
+
+  <!-- SCREEN: SETTINGS -->
+  <div class="screen" id="screenSettings">
+    <button class="back-btn" id="backFromSettings">← Назад</button>
+    <div class="settings-title">Настройки</div>
+
+    <div class="form-group">
+      <label class="form-label">Claude API Key</label>
+      <input type="password" class="form-input" id="apiKeyInput" placeholder="sk-ant-api03-...">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Твоё имя (для подписи)</label>
+      <input type="text" class="form-input" id="nameInput" placeholder="Илья">
+    </div>
+
+    <button class="btn btn-primary" id="saveSettingsBtn">Сохранить</button>
+  </div>
+
+  <div class="toast" id="toast">Скопировано!</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
